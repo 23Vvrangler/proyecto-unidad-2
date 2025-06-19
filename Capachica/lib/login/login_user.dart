@@ -119,7 +119,7 @@ class _LoginPageState extends State<LoginPage> {
               Image.asset("assets/imagen/Logo_LB.png", height: 180.0),
               const SizedBox(height: 20),
               Text(
-                "Bolsa Laboral",
+                "Capachica",
                 style: textTheme.headlineMedium!.copyWith(
                   fontWeight: FontWeight.bold,
                   color: colorScheme.onBackground,

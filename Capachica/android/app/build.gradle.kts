@@ -8,7 +8,8 @@ plugins {
 android {
     namespace = "com.example.app_capac"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    // CHANGE THIS LINE:
+    ndkVersion = "27.0.12077973" // <--- HARDCODE THE REQUIRED NDK VERSION HERE
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

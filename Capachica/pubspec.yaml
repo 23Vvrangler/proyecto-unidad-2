@@ -56,15 +56,14 @@ dependencies:
   geolocator: ^12.0.0 # Proporciona acceso a la ubicación GPS del dispositivo.
   geocoding: ^3.0.0 # Permite la geocodificación y geocodificación inversa (convertir coordenadas a direcciones y viceversa).
   floor: ^1.5.0 # Un generador de base de datos SQLite persistente para Flutter (similar a Room en Android).
-  fluttertoast: ^8.2.6 # Un paquete popular para mostrar mensajes "toast" (notificaciones temporales). Reemplaza tu anterior 'toast' si necesitas algo más mantenido.
+  fluttertoast: ^8.2.12 # Un paquete popular para mostrar mensajes "toast" (notificaciones temporales). Reemplaza tu anterior 'toast' si necesitas algo más mantenido.
   csv: ^5.1.1 # Permite leer y escribir archivos CSV.
   excel: ^3.0.0 # Proporciona funcionalidades para leer y escribir archivos Excel (XLSX).
-  share_plus: ^9.0.0 # Plugin para compartir contenido con otras aplicaciones del sistema.
+ # share_plus: ^8.0.1     # Use the latest stable version that uses web ^1.0.0
   file_picker: ^8.0.0 # Permite al usuario seleccionar archivos de almacenamiento interno o externo.
   image_picker: ^1.1.2 # Plugin para seleccionar imágenes o capturar fotos/videos de la galería/cámara.
   file_selector: ^1.0.0 # NOTA: Parece que no ha tenido actualizaciones recientes significativas. Sirve para seleccionar archivos de forma más específica por plataforma.
   flutter_launcher_icons: ^0.13.1 # NOTA: Este paquete no ha tenido actualizaciones desde 2023. Puede que aún funcione, pero considera su antigüedad si tienes problemas con nuevas versiones de Flutter. Genera iconos de lanzador de aplicaciones.
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
