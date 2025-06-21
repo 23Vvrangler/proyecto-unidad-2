@@ -14,8 +14,4 @@ public class TokenDto {
     private String userName; // Campo para el nombre de usuario
     private String role;     // Campo para el rol del usuario
 
-    public TokenDto(String token) {
-        this.token = token;
-        // Los otros campos (userName, role) se quedarán como null en este constructor
-    }
 }

@@ -1,10 +1,11 @@
 // lib/screens/reservacion_main.dart
+import 'package:app_capac/apis/reservacion_api.dart';
+import 'package:app_capac/modelo/ReservacionModelo.dart';
 import 'package:flutter/material.dart';
-import 'package:app_capac/modelo/ReservacionModelo.dart'; // Importa tu modelo de Reservación
-import 'package:app_capac/apis/reservacion_api.dart'; // Importa tu API de Reservación
 // import 'package:app_capac/screens/reservacion_form_edit.dart'; // ¡Eliminado! No se usa más
 
 class ReservacionMain extends StatefulWidget {
+  const ReservacionMain({super.key});
   @override
   _ReservacionMainState createState() => _ReservacionMainState();
 }

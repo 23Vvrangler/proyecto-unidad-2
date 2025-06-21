@@ -48,19 +48,31 @@ public class AuthUserServiceImpl implements AuthUserService {
 
     @Override
     public TokenDto login(AuthUserDto authUserDto) {
-        Optional<AuthUser> user = authRepository.findByUserName(authUserDto.getUserName());
-        if (!user.isPresent())
+        Optional<AuthUser> userOptional = authRepository.findByUserName(authUserDto.getUserName());
+
+        if (!userOptional.isPresent()) {
+            System.out.println("Login fallido: Usuario no encontrado para: " + authUserDto.getUserName());
             return null; // Usuario no encontrado
-        
-        // Verifica si la contraseña proporcionada coincide con la almacenada (codificada)
-        if (passwordEncoder.matches(authUserDto.getPassword(), user.get().getPassword())) {
-            // Si las credenciales son válidas, crea un token JWT
-            String generatedToken = jwtProvider.createToken(user.get());
-            
-            // Devuelve un nuevo TokenDto que contiene SOLAMENTE el token
-            return new TokenDto(generatedToken);
         }
-        return null; // Contraseña incorrecta
+
+        AuthUser user = userOptional.get();
+
+        // Verifica si la contraseña proporcionada coincide con la almacenada (codificada)
+        if (passwordEncoder.matches(authUserDto.getPassword(), user.getPassword())) {
+            // Si las credenciales son válidas, crea un token JWT
+            String generatedToken = jwtProvider.createToken(user);
+
+            // *** CAMBIO AQUI ***
+            // Ahora devuelve un TokenDto que contiene el token, el userName y el role.
+            return TokenDto.builder()
+                    .token(generatedToken)
+                    .userName(user.getUserName()) // Obtiene el userName del usuario autenticado
+                    .role(user.getRole().name())   // Obtiene el rol y lo convierte a su nombre de String (ej. "ADMIN", "USER")
+                    .build();
+        } else {
+            System.out.println("Login fallido: Contraseña incorrecta para usuario: " + authUserDto.getUserName());
+            return null; // Contraseña incorrecta
+        }
     }
 
     @Override

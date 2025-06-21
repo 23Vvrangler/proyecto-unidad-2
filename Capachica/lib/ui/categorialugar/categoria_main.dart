@@ -1,9 +1,11 @@
+import 'package:app_capac/apis/categorias_api.dart';
+import 'package:app_capac/modelo/CategoriaLugarModelo.dart';
 import 'package:flutter/material.dart';
-import 'package:app_capac/modelo/CategoriaLugarModelo.dart'; // Importa tu modelo de categoría
-import 'package:app_capac/apis/categorias_api.dart'; // Importa tu API de categorías
+
 // import 'package:app_capac/screens/categoria_form_edit.dart'; // ¡Eliminado! No se usa más
 
 class CategoriaMain extends StatefulWidget {
+  const CategoriaMain({super.key});
   @override
   _CategoriaMainState createState() => _CategoriaMainState();
 }

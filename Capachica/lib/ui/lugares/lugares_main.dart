@@ -1,10 +1,12 @@
 // lib/screens/lugar_main.dart
+import 'package:app_capac/apis/lugares_api.dart';
+import 'package:app_capac/modelo/LugaresModelo.dart';
 import 'package:flutter/material.dart';
-import 'package:app_capac/modelo/LugaresModelo.dart'; // Importa tu modelo de Lugar
-import 'package:app_capac/apis/lugares_api.dart'; // Importa tu API de Lugares
+
 // import 'package:app_capac/screens/lugar_form_edit.dart'; // ¡Eliminado! No se usa más
 
 class LugarMain extends StatefulWidget {
+  const LugarMain({super.key});
   @override
   _LugarMainState createState() => _LugarMainState();
 }

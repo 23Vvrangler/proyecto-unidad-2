@@ -1,100 +1,109 @@
-import 'package:flutter/material.dart';
 import 'package:app_capac/theme/AppTheme.dart';
+import 'package:flutter/material.dart';
 
-// CustomAppBar ahora solo necesita la función para notificar al padre
-// sobre los cambios en el tema.
+
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
-  const CustomAppBar({
+  // Cambiado de Function a VoidCallback para mayor claridad y seguridad de tipo
+  CustomAppBar({
     super.key,
-    required this.onThemeChanged, // Cambiado el nombre para mayor claridad
-  }) : preferredSize = const Size.fromHeight(kToolbarHeight); // Usamos kToolbarHeight para la altura estándar del AppBar
+    required this.onThemeChanged // Renombrado de accionx a onThemeChanged
+  }) : preferredSize = const Size.fromHeight(50.0); // Usar const si es posible
 
-  final VoidCallback onThemeChanged; // Función para notificar al padre sobre cambios en el tema
-
-  @override
-  final Size preferredSize; // Implementación de PreferredSizeWidget
+  // Cambiado de Function a VoidCallback
+  final VoidCallback onThemeChanged;
 
   @override
-  _CustomAppBarState createState() => _CustomAppBarState();
+  final Size preferredSize;
+
+  @override
+  _CustomAppBarState createState() => _CustomAppBarState(); // No se necesita pasar el callback al estado
 }
 
-class _CustomAppBarState extends State<CustomAppBar> {
-  // Ya no necesitamos 'accionx' como un campo del estado, se accede vía widget.onThemeChanged
+class _CustomAppBarState extends State<CustomAppBar>{
+  // El callback ya está disponible a través de widget.onThemeChanged
+  // No es necesario declarar accionx aquí ni en el constructor
+  // _CustomAppBarState(this.accionx);
+  // Function accionx;
 
   @override
   Widget build(BuildContext context) {
-    // Obtenemos el ColorScheme actual para adaptar los colores del AppBar
-    // Esto asegura que los iconos del AppBar utilicen los colores del tema actual
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    // La variable coloS está bien, pero el onTap de PopupMenuItem ya lo asigna
+    // Puedes mover la actualización del tema a onSelected.
+    int coloS = AppTheme.colorSelected; // Inicializar con el color actual
 
     return AppBar(
-      title: Center(
-        child: AppTheme.useMaterial3
-            ? const Text("BOLSA LABORAL") // Estilo Material 3 con mayúsculas
-            : const Text("Bolsa Laboral"), // Estilo Material 2 (si decides usarlo)
-      ),
+      title: Center(child: AppTheme.useMaterial3 ? const Text("BOLSA LABORAL") : const Text("Bolsa Laboral")),
       actions: [
-        // Botón para cambiar el modo claro/oscuro
         IconButton(
-          icon: AppTheme.useLightMode
-              ? const Icon(Icons.dark_mode_outlined) // Icono para modo oscuro si está en modo claro
-              : const Icon(Icons.light_mode_outlined), // Icono para modo claro si está en modo oscuro
-          onPressed: () {
+          icon: AppTheme.useLightMode? const Icon(Icons.wb_sunny_outlined): const Icon(Icons.wb_sunny),
+          onPressed: (){
             setState(() {
               AppTheme.useLightMode = !AppTheme.useLightMode;
-              widget.onThemeChanged(); // Notificar al padre para reconstruir el MaterialApp
+              AppTheme.themeData = ThemeData(
+                  colorSchemeSeed: AppTheme.colorOptions[AppTheme.colorSelected],
+                  useMaterial3: AppTheme.useMaterial3,
+                  brightness: AppTheme.useLightMode ? Brightness.light : Brightness.dark);
+
+              // Llama al callback para notificar a NavigationHomeScreen
+              widget.onThemeChanged();
             });
           },
-          tooltip: "Cambiar brillo",
+          tooltip: "Toggle brightness",
         ),
-        // Botón para cambiar entre Material 2 y Material 3 (si es necesario)
         IconButton(
-          icon: AppTheme.useMaterial3
-              ? const Icon(Icons.filter_2) // Icono para M2 si está en M3
-              : const Icon(Icons.filter_3), // Icono para M3 si está en M2
-          onPressed: () {
+          icon: AppTheme.useMaterial3? const Icon(Icons.filter_3): const Icon(Icons.filter_2),
+          onPressed: (){
             setState(() {
               AppTheme.useMaterial3 = !AppTheme.useMaterial3;
-              widget.onThemeChanged(); // Notificar al padre
+              AppTheme.themeData = ThemeData(
+                  colorSchemeSeed: AppTheme.colorOptions[AppTheme.colorSelected],
+                  useMaterial3: AppTheme.useMaterial3,
+                  brightness: AppTheme.useLightMode ? Brightness.light : Brightness.dark);
             });
+            // Llama al callback para notificar a NavigationHomeScreen
+            widget.onThemeChanged();
           },
-          tooltip: "Cambiar a Material ${AppTheme.useMaterial3 ? 2 : 3}",
+          tooltip: "Switch to Material ${AppTheme.useMaterial3 ? 2 : 3}",
         ),
-        // Menú desplegable para seleccionar el color principal
-        PopupMenuButton<int>(
+        PopupMenuButton<int>( // Especifica el tipo genérico para PopupMenuButton
           icon: const Icon(Icons.more_vert),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           itemBuilder: (context) {
-            return List.generate(AppTheme.seedColors.length, (index) {
-              return PopupMenuItem<int>(
+            return List.generate(AppTheme.colorOptions.length, (index) {
+              return PopupMenuItem<int>( // Especifica el tipo genérico para PopupMenuItem
                 value: index,
                 child: Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center, // Alineación vertical
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 10),
                       child: Icon(
-                        index == AppTheme.colorSelected
-                            ? Icons.color_lens // Icono relleno si está seleccionado
-                            : Icons.color_lens_outlined, // Icono de contorno si no
-                        color: AppTheme.seedColors[index], // Color del icono según la semilla
+                        index == AppTheme.colorSelected? Icons.color_lens: Icons.color_lens_outlined,
+                        color: AppTheme.colorOptions[index],
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 10), // Reducido el padding para mejor espaciado
-                      child: Text(AppTheme.seedColorNames[index]), // Nombre del color
-                    ),
+                        padding: const EdgeInsets.only(left: 20),
+                        child: Text(AppTheme.colorText[index]))
                   ],
                 ),
+                // Quitar onTap aquí y manejar el cambio de color en onSelected de PopupMenuButton
+                // El onTap del PopupMenuItem se ejecuta ANTES que onSelected,
+                // lo que puede causar un doble setState o un estado inconsistente.
+                // Es mejor dejar que onSelected maneje el cambio y el setState.
               );
             });
           },
-          onSelected: (selectedIndex) {
-            // Se ejecuta cuando se selecciona un elemento del menú
+          onSelected: (int selectedValue){ // selectedValue es el 'value' del PopupMenuItem
             setState(() {
-              AppTheme.colorSelected = selectedIndex;
-              widget.onThemeChanged(); // Notificar al padre para reconstruir
+              AppTheme.colorSelected = selectedValue; // Actualiza el color seleccionado globalmente
+              AppTheme.themeData = ThemeData(
+                  colorSchemeSeed: AppTheme.colorOptions[AppTheme.colorSelected], // Usar AppTheme.colorSelected
+                  useMaterial3: AppTheme.useMaterial3,
+                  brightness: AppTheme.useLightMode ? Brightness.light : Brightness.dark);
             });
+            // Llama al callback para notificar a NavigationHomeScreen
+            widget.onThemeChanged();
           },
         ),
       ],

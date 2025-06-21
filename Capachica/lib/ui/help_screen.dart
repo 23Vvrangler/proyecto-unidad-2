@@ -1,3 +1,4 @@
+
 import 'package:app_capac/comp/CustomAppBar.dart';
 import 'package:flutter/material.dart';
 // No es necesario importar AppTheme.dart directamente si solo usas Theme.of(context)

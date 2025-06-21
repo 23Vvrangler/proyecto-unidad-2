@@ -1,3 +1,4 @@
+
 import 'package:app_capac/modelo/LugaresModelo.dart';
 import 'package:json_annotation/json_annotation.dart';
 

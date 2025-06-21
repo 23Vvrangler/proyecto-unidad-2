@@ -10,11 +10,11 @@ part of 'usuario_api.dart';
 
 class _UsuarioApi implements UsuarioApi {
   _UsuarioApi(
-    this._dio, {
-    this.baseUrl,
-    this.errorLogger,
-  }) {
-    baseUrl ??= 'http://192.168.0.87:8080';
+      this._dio, {
+        this.baseUrl,
+        this.errorLogger,
+      }) {
+    baseUrl ??= 'http://192.168.0.181:8080';
   }
 
   final Dio _dio;
@@ -36,13 +36,13 @@ class _UsuarioApi implements UsuarioApi {
       extra: _extra,
     )
         .compose(
-          _dio.options,
-          '/auth/login',
-          queryParameters: queryParameters,
-          data: _data,
-        )
+      _dio.options,
+      '/auth/login',
+      queryParameters: queryParameters,
+      data: _data,
+    )
         .copyWith(
-            baseUrl: _combineBaseUrls(
+        baseUrl: _combineBaseUrls(
           _dio.options.baseUrl,
           baseUrl,
         )));
@@ -69,13 +69,13 @@ class _UsuarioApi implements UsuarioApi {
       extra: _extra,
     )
         .compose(
-          _dio.options,
-          '/auth/validate',
-          queryParameters: queryParameters,
-          data: _data,
-        )
+      _dio.options,
+      '/auth/validate',
+      queryParameters: queryParameters,
+      data: _data,
+    )
         .copyWith(
-            baseUrl: _combineBaseUrls(
+        baseUrl: _combineBaseUrls(
           _dio.options.baseUrl,
           baseUrl,
         )));
@@ -83,43 +83,6 @@ class _UsuarioApi implements UsuarioApi {
     late RespValidationModelo _value;
     try {
       _value = RespValidationModelo.fromJson(_result.data!);
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
-    return _value;
-  }
-
-  @override
-  Future<UsuarioModeloCompleto> getUsuarioCompleto(
-    int id,
-    String token,
-  ) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
-    const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<UsuarioModeloCompleto>(Options(
-      method: 'GET',
-      headers: _headers,
-      extra: _extra,
-    )
-        .compose(
-          _dio.options,
-          '/auth/users/${id}',
-          queryParameters: queryParameters,
-          data: _data,
-        )
-        .copyWith(
-            baseUrl: _combineBaseUrls(
-          _dio.options.baseUrl,
-          baseUrl,
-        )));
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late UsuarioModeloCompleto _value;
-    try {
-      _value = UsuarioModeloCompleto.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -141,13 +104,50 @@ class _UsuarioApi implements UsuarioApi {
       extra: _extra,
     )
         .compose(
-          _dio.options,
-          '/auth/create',
-          queryParameters: queryParameters,
-          data: _data,
-        )
+      _dio.options,
+      '/auth/create',
+      queryParameters: queryParameters,
+      data: _data,
+    )
         .copyWith(
-            baseUrl: _combineBaseUrls(
+        baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late UsuarioModeloCompleto _value;
+    try {
+      _value = UsuarioModeloCompleto.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<UsuarioModeloCompleto> getUsuarioCompleto(
+      int id,
+      String token,
+      ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<UsuarioModeloCompleto>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+      _dio.options,
+      '/auth/users/${id}',
+      queryParameters: queryParameters,
+      data: _data,
+    )
+        .copyWith(
+        baseUrl: _combineBaseUrls(
           _dio.options.baseUrl,
           baseUrl,
         )));
@@ -176,9 +176,9 @@ class _UsuarioApi implements UsuarioApi {
   }
 
   String _combineBaseUrls(
-    String dioBaseUrl,
-    String? baseUrl,
-  ) {
+      String dioBaseUrl,
+      String? baseUrl,
+      ) {
     if (baseUrl == null || baseUrl.trim().isEmpty) {
       return dioBaseUrl;
     }

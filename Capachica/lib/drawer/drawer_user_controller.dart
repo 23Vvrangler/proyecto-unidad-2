@@ -1,5 +1,5 @@
-import 'package:app_capac/theme/AppTheme.dart';
 import 'package:app_capac/drawer/home_drawer.dart';
+import 'package:app_capac/theme/AppTheme.dart';
 import 'package:flutter/material.dart';
 
 class DrawerUserController extends StatefulWidget {
@@ -145,7 +145,7 @@ class _DrawerUserControllerState extends State<DrawerUserController>
                     //color: AppTheme.white,
                     boxShadow: <BoxShadow>[
                       BoxShadow(
-                        //color: AppTheme.grey.withOpacity(0.6),
+                          //color: AppTheme.grey.withOpacity(0.6),
                           blurRadius: 24),
                     ],
                   ),
@@ -185,9 +185,9 @@ class _DrawerUserControllerState extends State<DrawerUserController>
                                 child: widget.menuView != null
                                     ? widget.menuView
                                     : AnimatedIcon(
-                                    color: AppTheme.colorMenu,
-                                    icon: widget.animatedIconData ?? AnimatedIcons.arrow_menu,
-                                    progress: iconAnimationController!),
+                                        color: AppTheme.colorMenu,
+                                        icon: widget.animatedIconData ?? AnimatedIcons.arrow_menu,
+                                        progress: iconAnimationController!),
                               ),
                               onTap: () {
                                 FocusScope.of(context)

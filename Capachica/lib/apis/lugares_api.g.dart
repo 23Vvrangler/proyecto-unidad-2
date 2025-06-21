@@ -14,7 +14,7 @@ class _LugaresApi implements LugaresApi {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'http://192.168.0.87:8080';
+    baseUrl ??= 'http://192.168.0.181:8080';
   }
 
   final Dio _dio;

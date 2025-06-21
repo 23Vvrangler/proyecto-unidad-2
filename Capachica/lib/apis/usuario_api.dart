@@ -1,11 +1,14 @@
+
 import 'package:app_capac/modelo/UsuarioModelo.dart';
-import 'package:dio/dio.dart';
 import 'package:app_capac/util/UrlApi.dart';
+import 'package:dio/dio.dart';
+
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-import 'package:retrofit/http.dart';
 import 'package:retrofit/retrofit.dart';
 
-
+// Esta línea es CRUCIAL para que Retrofit genere el código necesario.
+// Asegúrate de que 'usuario_api.g.dart' exista después de ejecutar
+// 'flutter pub run build_runner build' o 'flutter pub run build_runner watch'.
 part 'usuario_api.g.dart';
 
 @RestApi(baseUrl: UrlApi.urlApix)
@@ -18,36 +21,32 @@ abstract class UsuarioApi {
         baseUrl: UrlApi.urlApix,
         connectTimeout: const Duration(milliseconds: 30000),
         receiveTimeout: const Duration(milliseconds: 30000),
-        headers: {
-          'Content-Type': 'application/json',
-        },
       ),
     );
+
+    // Añade el interceptor PrettyDioLogger para ver los logs detallados de la petición y la respuesta.
+    // Esto es CLAVE para la depuración del problema actual de no ver la respuesta.
     dio.interceptors.add(PrettyDioLogger(
-      requestHeader: true,
-      requestBody: true,
-      responseBody: true,
-      responseHeader: false,
-      error: true,
-      compact: true,
-      maxWidth: 90,
+        requestHeader: true, // Muestra los encabezados de la petición
+        requestBody: true,   // Muestra el cuerpo de la petición
+        responseHeader: true,// Muestra los encabezados de la respuesta
+        responseBody: true,  // Muestra el cuerpo de la respuesta
+        error: true,         // Muestra los errores
+        compact: false,      // Formatea el JSON para una mejor lectura
+        maxWidth: 90         // Limita el ancho de la línea de logs
     ));
+
     return UsuarioApi(dio);
   }
 
-  // Endpoint para el login. Ahora devuelve RespLoginModelo.
+
   @POST("/auth/login")
   Future<RespLoginModelo> login(@Body() LoginUsuarioModelo usuario);
 
-  // Nuevo endpoint para validar el token y obtener los detalles del usuario
-  @GET("/auth/validate")
-  Future<RespValidationModelo> validateToken(@Query("token") String token);
 
-  // Ejemplo: Endpoint para obtener un UsuarioModeloCompleto (si lo tienes)
-  @GET("/auth/users/{id}")
-  Future<UsuarioModeloCompleto> getUsuarioCompleto(@Path("id") int id, @Header("Authorization") String token);
 
-  // Ejemplo: Endpoint para registrar un nuevo UsuarioModeloCompleto (POST completo)
-  @POST("/auth/create") // Ajusta esta URL según tu backend
+  @POST("/auth/create")
   Future<UsuarioModeloCompleto> registerUsuario(@Body() UsuarioModeloCompleto usuario);
+
+
 }

@@ -1,9 +1,7 @@
+import 'package:app_capac/apis/usuario_api.dart';
+import 'package:app_capac/util/TokenUtil.dart';
 import 'package:flutter/material.dart';
-//import 'package:app_capac/apis/estudiante_api.dart'; // Comentado: Relacionado con estudiante
-//import 'package:app_capac/modelo/EstudianteModelo.dart'; // Comentado: Relacionado con estudiante
-import 'package:app_capac/theme/AppTheme.dart';
-//import 'package:app_capac/login/login_user.dart'; // Comentado: Relacionado con login
-//import 'package:app_capac/util/TokenUtil.dart'; // Comentado: Relacionado con token
+
 
 class HomeDrawer extends StatefulWidget {
   const HomeDrawer({
@@ -32,113 +30,36 @@ class _HomeDrawerState extends State<HomeDrawer> {
   void initState() {
     setDrawerListArray();
     super.initState();
-    //_fetchEstudianteData(); // Comentado: Relacionado con estudiante y API
   }
 
-  // Método para obtener los datos del estudiante asociado al authUserId
-  // Comentado: Bloque completo de función _fetchEstudianteData
-  /*
-  Future<void> _fetchEstudianteData() async {
-    final api = EstudianteApi.create(); // Crear instancia de la API
-    try {
-      final estudiantes =
-          await api.listarEstudiantes(); // Obtener todos los estudiantes
-      print("Estudiantes recuperados: ");
-      estudiantes.forEach((est) {
-        print("Estudiante: ${est.nombre}, AuthUserId: ${est.authUserId}");
-      });
 
-      final authUserId =
-          TokenUtil.authUserId; // Obtener el authUserId del token
-      print("authUserId: $authUserId");
-
-      // Asegurarnos de que authUserId sea un número entero
-      final int? authUserIdInt = int.tryParse(authUserId.toString());
-      if (authUserIdInt == null) {
-        print("El authUserId no es válido.");
-        return;
-      }
-
-      // Buscar al estudiante con el authUserId correspondiente
-      final estudiante = estudiantes.firstWhere(
-            (est) =>
-        est.authUserId == authUserIdInt, // Comparación estricta con enteros
-        orElse: () {
-          print(
-              "No se encontró un estudiante con el authUserId: $authUserIdInt");
-          return EstudianteModelo(
-              id: 0,
-              nombre: 'Anonimo',
-              apellidoPaterno: 'Anonimo',
-              apellidoMaterno: '',
-              dni: 0,
-              carrera: '',
-              universidad: '',
-              habilidades: '',
-              horasCompletadas: '',
-              authUserId: 0,
-              authUserDto: AuthUserDto(id: 0, userName: ''));
-        },
-      );
-
-      if (estudiante.authUserId != 0) {
-        final estudianteDetalles = await api.buscarEstudiante(estudiante
-            .id); // Llamamos al endpoint para obtener los detalles completos
-        setState(() {
-          estudianteNombre = estudianteDetalles.nombre;
-          estudianteApellido = estudianteDetalles.apellidoPaterno;
-          estudianteApellidoM = estudianteDetalles.apellidoMaterno;
-          isLoading = false;
-        });
-      } else {
-        setState(() {
-          estudianteNombre = 'Anonimo';
-          estudianteApellido = 'Anonimo';
-          estudianteApellidoM = 'Anonimo';
-          isLoading = false;
-        });
-      }
-    } catch (e) {
-      print("Error al obtener los datos del estudiante: $e");
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
-  */
 
   void setDrawerListArray() {
     drawerList = <DrawerList>[
       DrawerList(
         index: DrawerIndex.HOME,
         labelName: 'Principal',
-        icon: Icon(Icons.home), // Se eliminará el color fijo en el build
+        icon: const Icon(Icons.home_outlined),
       ),
       DrawerList(
-        index: DrawerIndex.Invite,
-        labelName: 'Estudiante',
-        icon: Icon(Icons.group), // Se eliminará el color fijo en el build
+        index: DrawerIndex.PLACE_CATEGORY,
+        labelName: 'Categoría Lugar',
+        icon: const Icon(Icons.category_outlined),
       ),
       DrawerList(
-        index: DrawerIndex.FeedBack,
-        labelName: 'Postulaciones',
-        icon: Icon(Icons.description), // Cambiado a un ícono más relevante
+        index: DrawerIndex.LOCATIONS,
+        labelName: 'Lugares',
+        icon: const Icon(Icons.location_on_outlined),
       ),
       DrawerList(
-        index: DrawerIndex.Share,
-        labelName: 'Ofertas',
-        icon: Icon(Icons.local_offer), // Cambiado a un ícono más relevante
-      ),
-      DrawerList(
-        index: DrawerIndex.Testing,
-        labelName: 'Seguimientos',
-        icon: Icon(Icons.track_changes), // Cambiado a un ícono más relevante
-      ),
-      // Añadir una opción de "Perfil" que podrías haber quitado al comentar Estudiante
-      DrawerList(
-        index: DrawerIndex.About, // Puedes usar About o crear un nuevo índice
+        index: DrawerIndex.PROFILE,
         labelName: 'Perfil',
-        icon: Icon(Icons.person),
+        icon: const Icon(Icons.person_outline),
+      ),
+      DrawerList(
+        index: DrawerIndex.RESERVATIONS,
+        labelName: 'Reservaciones',
+        icon: const Icon(Icons.book_online_outlined),
       ),
     ];
   }
@@ -328,12 +249,12 @@ class _HomeDrawerState extends State<HomeDrawer> {
 
 enum DrawerIndex {
   HOME,
-  FeedBack,
-  Help,
-  Share,
-  About,
-  Invite,
-  Testing,
+  PLACE_CATEGORY,
+  LOCATIONS,
+  PROFILE,
+  RESERVATIONS,
+  HELP
+  // NOTIFICATIONS, // Si agregaste Notificaciones al enum en setDrawerListArray
 }
 
 class DrawerList {

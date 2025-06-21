@@ -1,9 +1,11 @@
 import 'package:app_capac/modelo/ReservacionModelo.dart';
+import 'package:app_capac/util/UrlApi.dart';
+
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:retrofit/http.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:app_capac/util/UrlApi.dart'; // Tu archivo de URLs
+
 
 part 'reservacion_api.g.dart'; // ¡Importante! Este archivo se generará
 
