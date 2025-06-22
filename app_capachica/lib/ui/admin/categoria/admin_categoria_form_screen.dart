@@ -1,16 +1,14 @@
-// lib/ui/admin/categoria/admin_categoria_form_screen.dart
-
 import 'package:app_capachica/modelo/CategoriaLugarModelo.dart';
 import 'package:flutter/material.dart';
 import 'package:app_capachica/apis/categoria_api.dart';
 
 class AdminCategoriaFormScreen extends StatefulWidget {
-  final CategoriaLugarModelo? categoria; // Será null para crear, tendrá valor para editar
+  final CategoriaLugarModelo? categoria;
 
-  const AdminCategoriaFormScreen({super.key, this.categoria});
+  const AdminCategoriaFormScreen({Key? key, this.categoria}) : super(key: key);
 
   @override
-  State<AdminCategoriaFormScreen> createState() => _AdminCategoriaFormScreenState();
+  _AdminCategoriaFormScreenState createState() => _AdminCategoriaFormScreenState();
 }
 
 class _AdminCategoriaFormScreenState extends State<AdminCategoriaFormScreen> {
@@ -26,7 +24,6 @@ class _AdminCategoriaFormScreenState extends State<AdminCategoriaFormScreen> {
     super.initState();
     _categoriaApi = CategoriaApi.create();
     if (widget.categoria != null) {
-      // Si estamos editando, precarga los datos
       _nombreController.text = widget.categoria!.nombre;
       _urlImagenController.text = widget.categoria!.urlImagen ?? '';
     }
@@ -39,9 +36,10 @@ class _AdminCategoriaFormScreenState extends State<AdminCategoriaFormScreen> {
     super.dispose();
   }
 
-  /// Muestra un SnackBar con un mensaje al usuario.
   void _showSnackBar(String message, {bool isError = false}) {
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
@@ -50,7 +48,6 @@ class _AdminCategoriaFormScreenState extends State<AdminCategoriaFormScreen> {
     );
   }
 
-  /// Valida el formulario y guarda (crea o actualiza) la categoría.
   Future<void> _saveCategoria() async {
     if (!_formKey.currentState!.validate()) {
       _showSnackBar('Por favor, corrige los errores del formulario.', isError: true);
@@ -62,25 +59,22 @@ class _AdminCategoriaFormScreenState extends State<AdminCategoriaFormScreen> {
     });
 
     final nuevaCategoria = CategoriaLugarModelo(
-      id: widget.categoria?.id, // Si es edición, se mantiene el ID
+      id: widget.categoria?.id,
       nombre: _nombreController.text.trim(),
-      // Si la URL de imagen está vacía, se guarda como null
       urlImagen: _urlImagenController.text.trim().isEmpty ? null : _urlImagenController.text.trim(),
-      lugares: widget.categoria?.lugares, // Mantener la lista de lugares si existe (útil si la API lo maneja)
+      lugares: widget.categoria?.lugares,
     );
 
     try {
       if (widget.categoria == null) {
-        // Crear nueva categoría
         await _categoriaApi.createCategoria(nuevaCategoria);
         _showSnackBar('Categoría creada con éxito.');
       } else {
-        // Actualizar categoría existente
         await _categoriaApi.updateCategoria(nuevaCategoria.id!, nuevaCategoria);
         _showSnackBar('Categoría actualizada con éxito.');
       }
       if (mounted) {
-        Navigator.pop(context, true); // Devuelve 'true' para indicar que hubo un cambio.
+        Navigator.pop(context, true);
       }
     } catch (e) {
       _showSnackBar('Error al guardar la categoría: ${e.toString()}', isError: true);
@@ -97,7 +91,8 @@ class _AdminCategoriaFormScreenState extends State<AdminCategoriaFormScreen> {
       appBar: AppBar(
         title: Text(widget.categoria == null ? 'Crear Categoría' : 'Editar Categoría'),
         centerTitle: true,
-        backgroundColor: Colors.blueAccent, // Color consistente para el AppBar de categorías.
+        backgroundColor: Colors.blueAccent,
+        foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -111,9 +106,9 @@ class _AdminCategoriaFormScreenState extends State<AdminCategoriaFormScreen> {
                 decoration: const InputDecoration(
                   labelText: 'Nombre de la Categoría',
                   hintText: 'Ej. Restaurantes',
-                  border: OutlineInputBorder(), // Estilo de borde establecido.
-                  prefixIcon: Icon(Icons.category, color: Colors.blueAccent), // Color del icono.
-                  focusedBorder: OutlineInputBorder( // Estilo de borde cuando está enfocado.
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.category, color: Colors.blueAccent),
+                  focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.blueAccent, width: 2.0),
                   ),
                 ),
@@ -130,28 +125,27 @@ class _AdminCategoriaFormScreenState extends State<AdminCategoriaFormScreen> {
                 decoration: const InputDecoration(
                   labelText: 'URL de la Imagen (opcional)',
                   hintText: 'Ej. https://ejemplo.com/imagen.jpg',
-                  border: OutlineInputBorder(), // Estilo de borde establecido.
-                  prefixIcon: Icon(Icons.image, color: Colors.blueAccent), // Color del icono.
-                  focusedBorder: OutlineInputBorder( // Estilo de borde cuando está enfocado.
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.image, color: Colors.blueAccent),
+                  focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.blueAccent, width: 2.0),
                   ),
                 ),
-                keyboardType: TextInputType.url, // Teclado específico para URLs.
+                keyboardType: TextInputType.url,
               ),
               const SizedBox(height: 32),
               _isSaving
                   ? const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.blueAccent)))
                   : ElevatedButton.icon(
                 onPressed: _saveCategoria,
-                icon: Icon(widget.categoria == null ? Icons.add : Icons.save),
+                icon: Icon(widget.categoria == null ? Icons.add : Icons.save, color: Colors.white),
                 label: Text(widget.categoria == null ? 'Crear Categoría' : 'Guardar Cambios',
-                    style: const TextStyle(fontSize: 18)),
+                    style: const TextStyle(fontSize: 18, color: Colors.white)),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 12),
-                  backgroundColor: Colors.blueAccent, // Color de botón consistente.
-                  foregroundColor: Colors.white, // Color de texto del botón.
+                  backgroundColor: Colors.blueAccent,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10), // Bordes redondeados.
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
               ),

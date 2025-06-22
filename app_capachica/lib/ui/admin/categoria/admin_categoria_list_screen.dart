@@ -81,7 +81,7 @@ class _AdminCategoriaListScreenState extends State<AdminCategoriaListScreen> {
       try {
         await _categoriaApi.deleteCategoria(id);
         _showSnackBar('Categoría eliminada con éxito.');
-        _fetchCategorias(); // Refresh the list after deletion
+        _fetchCategorias(); // Refrescar la lista después de la eliminación
       } catch (e) {
         _showSnackBar('Error al eliminar la categoría: ${e.toString()}', isError: true);
       } finally {
@@ -107,7 +107,7 @@ class _AdminCategoriaListScreenState extends State<AdminCategoriaListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Admin Categorías'),
+        title: const Text('Administrar Categorías'), // Título más descriptivo
         centerTitle: true,
         backgroundColor: Colors.blueAccent, // Consistent AppBar color for categories
         foregroundColor: Colors.white, // Text color for AppBar title and icons
@@ -165,24 +165,6 @@ class _AdminCategoriaListScreenState extends State<AdminCategoriaListScreen> {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 20),
-            // Optionally add a button to create the first category
-            // ElevatedButton.icon(
-            //   onPressed: () async {
-            //     final result = await Navigator.push(
-            //       context,
-            //       MaterialPageRoute(builder: (context) => const AdminCategoriaFormScreen()),
-            //     );
-            //     if (result == true) {
-            //       _fetchCategorias();
-            //     }
-            //   },
-            //   icon: const Icon(Icons.add, color: Colors.white),
-            //   label: const Text('Crear primera categoría', style: TextStyle(color: Colors.white)),
-            //   style: ElevatedButton.styleFrom(
-            //     backgroundColor: Colors.blueAccent,
-            //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            //   ),
-            // ),
           ],
         ),
       )
@@ -192,42 +174,46 @@ class _AdminCategoriaListScreenState extends State<AdminCategoriaListScreen> {
         itemBuilder: (context, index) {
           final categoria = _categorias[index];
           return Card(
-            margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
-            elevation: 3, // Slightly increased elevation for better visual
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)), // More rounded corners
+            margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10), // Margen más uniforme
+            elevation: 4, // Ligeramente más elevado para destacar
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)), // Bordes más redondeados
             child: ListTile(
-              contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
               leading: categoria.urlImagen != null && categoria.urlImagen!.isNotEmpty
                   ? ClipRRect( // Clip the image to a circle
-                borderRadius: BorderRadius.circular(25), // Half of width/height for perfect circle
+                borderRadius: BorderRadius.circular(30), // La mitad de 60 para un círculo perfecto
                 child: Image.network(
                   categoria.urlImagen!,
-                  width: 50, // Standard size for leading image
-                  height: 50,
+                  width: 60, // Tamaño un poco más grande para la imagen
+                  height: 60,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
-                    // Fallback to a default icon if image fails to load
+                    // Fallback a un icono por defecto si la imagen falla al cargar
                     return Container(
-                      width: 50,
-                      height: 50,
+                      width: 60,
+                      height: 60,
                       decoration: const BoxDecoration(
                         color: Colors.blueGrey,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.broken_image, color: Colors.white, size: 30),
+                      child: const Icon(Icons.broken_image, color: Colors.white, size: 35),
                     );
                   },
                 ),
               )
-                  : const CircleAvatar( // Default icon if no image URL
+                  : const CircleAvatar( // Icono por defecto si no hay URL de imagen
+                radius: 30, // Tamaño del CircleAvatar
                 backgroundColor: Colors.blueGrey,
-                child: Icon(Icons.category, color: Colors.white, size: 30),
+                child: Icon(Icons.category, color: Colors.white, size: 35),
               ),
               title: Text(
                 categoria.nombre,
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.black87), // Más grande y oscuro
               ),
-              subtitle: Text('ID: ${categoria.id ?? 'N/A'}'),
+              subtitle: Text(
+                'ID: ${categoria.id ?? 'N/A'}',
+                style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
+              ),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -256,7 +242,7 @@ class _AdminCategoriaListScreenState extends State<AdminCategoriaListScreen> {
                 ],
               ),
               onTap: () async {
-                // Opcional: Navegar a una vista de detalle o abrir el formulario para editar al tocar el ListTile
+                // Navegar a la pantalla de edición al tocar el ListTile completo
                 final result = await Navigator.push(
                   context,
                   MaterialPageRoute(

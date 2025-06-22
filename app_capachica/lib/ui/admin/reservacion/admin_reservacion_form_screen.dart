@@ -104,10 +104,7 @@ class _AdminReservacionFormScreenState extends State<AdminReservacionFormScreen>
     if (picked != null) {
       setState(() {
         // Format the TimeOfDay to a string like "HH:MM"
-        // Use context.locale for proper formatting, but for a simple HH:MM a direct format is usually fine
-        // if (context.mounted) { // This check is good practice but might not be strictly needed for .format
         _horaReservaController.text = picked.format(context);
-        // }
       });
     }
   }
@@ -162,6 +159,7 @@ class _AdminReservacionFormScreenState extends State<AdminReservacionFormScreen>
         title: Text(widget.reservacion == null ? 'Crear Reservación' : 'Editar Reservación'),
         centerTitle: true,
         backgroundColor: Colors.indigo, // Consistent AppBar color
+        foregroundColor: Colors.white, // Text and icon color for AppBar
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -256,7 +254,8 @@ class _AdminReservacionFormScreenState extends State<AdminReservacionFormScreen>
                     return 'Por favor, ingresa el número de personas.';
                   }
                   // Validate if it's a positive integer
-                  if (int.tryParse(value) == null || int.parse(value) <= 0) {
+                  final int? parsedValue = int.tryParse(value);
+                  if (parsedValue == null || parsedValue <= 0) {
                     return 'Debe ser un número válido mayor que 0.';
                   }
                   return null;

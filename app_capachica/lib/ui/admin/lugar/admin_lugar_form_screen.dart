@@ -64,7 +64,6 @@ class _AdminLugarFormScreenState extends State<AdminLugarFormScreen> {
       _categorias = await _categoriaApi.getAllCategorias();
 
       if (widget.lugar != null) {
-        // --- INICIO DE LA CORRECCIÓN FINAL ---
         // Intentamos encontrar la categoría del lugar existente.
         // Usamos try-catch porque firstWhere sin orElse lanza un StateError si no encuentra.
         CategoriaLugarModelo? foundCategory;
@@ -74,26 +73,21 @@ class _AdminLugarFormScreenState extends State<AdminLugarFormScreen> {
           );
         } on StateError {
           // Si la categoría no se encuentra (StateError), foundCategory permanece null.
-          _showSnackBar('La categoría del lugar a editar no fue encontrada en la lista actual.', isError: true);
+          _showSnackBar('La categoría del lugar a editar no fue encontrada en la lista actual. Seleccionando la primera disponible.', isError: true);
         }
 
         // Si se encontró, la asignamos.
         if (foundCategory != null) {
           _selectedCategory = foundCategory;
         } else {
-          // Si no se encontró o no hay categorías, seleccionamos la primera si existe, o null.
+          // Si no se encontró, seleccionamos la primera si existe, o null.
           if (_categorias.isNotEmpty) {
             _selectedCategory = _categorias.first;
-            // Solo mostramos un mensaje adicional si estamos editando y cambiamos la categoría original.
-            if (widget.lugar != null) {
-              _showSnackBar('Seleccionando la primera categoría disponible.', isError: true);
-            }
           } else {
             _selectedCategory = null; // No hay categorías disponibles.
             _showSnackBar('No hay categorías disponibles para seleccionar.', isError: true);
           }
         }
-        // --- FIN DE LA CORRECCIÓN FINAL ---
       } else if (_categorias.isNotEmpty) {
         // Para nuevas creaciones, si hay categorías, selecciona la primera por defecto.
         _selectedCategory = _categorias.first;
@@ -130,7 +124,7 @@ class _AdminLugarFormScreenState extends State<AdminLugarFormScreen> {
       return;
     }
     if (_selectedCategory == null) {
-      _showSnackBar('Por favor, selecciona una categoría.', isError: true);
+      _showSnackBar('Por favor, selecciona una categoría para el lugar.', isError: true);
       return;
     }
 
@@ -157,7 +151,7 @@ class _AdminLugarFormScreenState extends State<AdminLugarFormScreen> {
       } else {
         // Actualizar lugar existente
         await _lugarApi.updateLugar(nuevoLugar.id!, nuevoLugar);
-        _showSnackBar('Lugar actualizado con éxito.');
+        _showSnackBar('Lugar actualizada con éxito.');
       }
       if (mounted) {
         Navigator.pop(context, true); // Pop con 'true' para indicar que hubo un cambio.
@@ -178,8 +172,48 @@ class _AdminLugarFormScreenState extends State<AdminLugarFormScreen> {
         title: Text(widget.lugar == null ? 'Crear Lugar' : 'Editar Lugar'),
         centerTitle: true,
         backgroundColor: Colors.teal, // Color consistente para el AppBar de lugares.
+        foregroundColor: Colors.white, // Color del texto y los iconos en el AppBar.
       ),
-      body: SingleChildScrollView(
+      body: _isLoadingCategories
+          ? const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.teal)))
+          : _categorias.isEmpty && widget.lugar == null // Si no hay categorías y se intenta crear un lugar
+          ? Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.category_outlined, color: Colors.grey, size: 60), // <-- CORRECCIÓN AQUÍ
+              const SizedBox(height: 15),
+              const Text(
+                'No hay categorías disponibles.',
+                style: TextStyle(fontSize: 18, color: Colors.grey),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'Por favor, crea una categoría primero para poder añadir lugares.',
+                style: TextStyle(fontSize: 15, color: Colors.grey),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 30),
+              // Aquí podrías añadir un botón para navegar a crear una categoría si tu app lo permite
+              // ElevatedButton.icon(
+              //   onPressed: () {
+              //     // Navegar a la pantalla de creación de categorías
+              //   },
+              //   icon: const Icon(Icons.add, color: Colors.white),
+              //   label: const Text('Crear Categoría', style: TextStyle(color: Colors.white)),
+              //   style: ElevatedButton.styleFrom(
+              //     backgroundColor: Colors.blueAccent, // O el color de categorías
+              //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              //   ),
+              // ),
+            ],
+          ),
+        ),
+      )
+          : SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
@@ -243,7 +277,7 @@ class _AdminLugarFormScreenState extends State<AdminLugarFormScreen> {
               TextFormField(
                 controller: _calificacionController,
                 decoration: const InputDecoration(
-                  labelText: 'Calificación Promedio (opcional)',
+                  labelText: 'Calificación Promedio (0-5, opcional)', // Hint más claro
                   hintText: 'Ej. 4.5',
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.star, color: Colors.teal),
@@ -251,7 +285,7 @@ class _AdminLugarFormScreenState extends State<AdminLugarFormScreen> {
                     borderSide: BorderSide(color: Colors.teal, width: 2.0),
                   ),
                 ),
-                keyboardType: TextInputType.number,
+                keyboardType: TextInputType.numberWithOptions(decimal: true), // Permitir decimales
                 validator: (value) {
                   if (value != null && value.isNotEmpty) {
                     final double? calificacion = double.tryParse(value);
@@ -263,9 +297,8 @@ class _AdminLugarFormScreenState extends State<AdminLugarFormScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              _isLoadingCategories
-                  ? const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.teal)))
-                  : DropdownButtonFormField<CategoriaLugarModelo>(
+              // Aquí se muestra el Dropdown para la categoría
+              DropdownButtonFormField<CategoriaLugarModelo>(
                 value: _selectedCategory,
                 decoration: const InputDecoration(
                   labelText: 'Categoría',
@@ -292,6 +325,7 @@ class _AdminLugarFormScreenState extends State<AdminLugarFormScreen> {
                   }
                   return null;
                 },
+                isExpanded: true, // Para que ocupe todo el ancho disponible
               ),
               const SizedBox(height: 32),
               _isSaving
