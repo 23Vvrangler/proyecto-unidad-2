@@ -1,23 +1,21 @@
-// lib/apis/usuario_api.dart
-
-import 'package:app_capachica/modelo/UsuarioModelo.dart';
-import 'package:app_capachica/utils/UrlApi.dart';               // Tu clase con la URL base de la API
+import 'package:app_capachica/modelo/ReservacionModelo.dart';
+import 'package:app_capachica/utils/UrlApi.dart';        // Tu clase con la URL base de la API
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:retrofit/retrofit.dart';
 
-// Esta línea es CRUCIAL para que Retrofit genere el código necesario.
-// Asegúrate de que 'usuario_api.g.dart' exista después de ejecutar:
+// Esta línea es crucial para que Retrofit genere el código necesario.
+// Asegúrate de que 'reservacion_api.g.dart' exista después de ejecutar:
 // 'flutter pub run build_runner build' o 'flutter pub run build_runner watch'.
-part 'usuario_api.g.dart'; // Este archivo será generado automáticamente
+part 'reservacion_api.g.dart'; // Este archivo será generado automáticamente
 
 @RestApi(baseUrl: UrlApi.urlApix) // Usa tu URL base definida en UrlApi.dart
-abstract class UsuarioApi {
+abstract class ReservacionApi {
   // El factory constructor es necesario para que Retrofit genere la implementación.
-  factory UsuarioApi(Dio dio, {String baseUrl}) = _UsuarioApi;
+  factory ReservacionApi(Dio dio, {String baseUrl}) = _ReservacionApi;
 
-  // Método estático para crear una instancia de UsuarioApi con Dio configurado.
-  static UsuarioApi create() {
+  // Método estático para crear una instancia de ReservacionApi con Dio configurado.
+  static ReservacionApi create() {
     final dio = Dio(
       BaseOptions(
         baseUrl: UrlApi.urlApix,
@@ -40,25 +38,24 @@ abstract class UsuarioApi {
         maxWidth: 90         // Limita el ancho de la línea de logs
     ));
 
-    return UsuarioApi(dio);
+    return ReservacionApi(dio);
   }
 
-  // --- Endpoints de la API ---
-
-  /// Realiza una petición POST para iniciar sesión.
-  /// Espera un [LoginRequestModelo] en el cuerpo y devuelve un [LoginResponseModelo].
-  @POST("/auth/login")
-  Future<LoginResponseModelo> login(@Body() LoginRequestModelo usuario);
+  // --- Endpoints de la API para Reservacion ---
 
 
-  /// Realiza una petición POST para registrar un nuevo usuario.
-  /// Espera un [UsuarioCreacionModelo] en el cuerpo.
-  /// Se asume que la respuesta también puede ser un [UsuarioCreacionModelo] o similar
-  /// confirmando la creación. Si tu backend devuelve algo diferente (ej. solo un ID),
-  /// deberías usar un modelo de respuesta específico.
-  @POST("/auth/create")
-  Future<UsuarioCreacionModelo> registerUsuario(@Body() UsuarioCreacionModelo usuario);
+  @POST("/reservas") // Asumiendo este es el endpoint para crear reservaciones
+  Future<ReservacionModelo> createReservacion(@Body() ReservacionModelo reservacion);
 
-  @GET("/auth/users/{id}") // <-- ¡CAMBIO AQUÍ! Añadido '/auth'
-  Future<UsuarioCreacionModelo> getUserById(@Path("id") int id);
+  @GET("/reservas/{id}") // Asumiendo este es el endpoint para obtener una reservación por ID
+  Future<ReservacionModelo> getReservacionById(@Path("id") int id);
+
+  @GET("/reservas") // Asumiendo este es el endpoint para obtener todas las reservaciones
+  Future<List<ReservacionModelo>> getAllReservaciones();
+
+  @PUT("/reservas/{id}") // Asumiendo este es el endpoint para actualizar una reservación por ID
+  Future<ReservacionModelo> updateReservacion(@Path("id") int id, @Body() ReservacionModelo reservacion);
+
+  @DELETE("/reservas/{id}") // Asumiendo este es el endpoint para eliminar una reservación por ID
+  Future<void> deleteReservacion(@Path("id") int id);
 }

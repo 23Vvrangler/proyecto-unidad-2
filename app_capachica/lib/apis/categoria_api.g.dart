@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'usuario_api.dart';
+part of 'categoria_api.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,8 +8,8 @@ part of 'usuario_api.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element
 
-class _UsuarioApi implements UsuarioApi {
-  _UsuarioApi(
+class _CategoriaApi implements CategoriaApi {
+  _CategoriaApi(
     this._dio, {
     this.baseUrl,
     this.errorLogger,
@@ -24,20 +24,21 @@ class _UsuarioApi implements UsuarioApi {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<LoginResponseModelo> login(LoginRequestModelo usuario) async {
+  Future<CategoriaLugarModelo> createCategoria(
+      CategoriaLugarModelo categoria) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    _data.addAll(usuario.toJson());
-    final _options = _setStreamType<LoginResponseModelo>(Options(
+    _data.addAll(categoria.toJson());
+    final _options = _setStreamType<CategoriaLugarModelo>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
     )
         .compose(
           _dio.options,
-          '/auth/login',
+          '/categorias-lugar',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -47,9 +48,9 @@ class _UsuarioApi implements UsuarioApi {
           baseUrl,
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late LoginResponseModelo _value;
+    late CategoriaLugarModelo _value;
     try {
-      _value = LoginResponseModelo.fromJson(_result.data!);
+      _value = CategoriaLugarModelo.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -58,21 +59,23 @@ class _UsuarioApi implements UsuarioApi {
   }
 
   @override
-  Future<UsuarioCreacionModelo> registerUsuario(
-      UsuarioCreacionModelo usuario) async {
+  Future<CategoriaLugarModelo> updateCategoria(
+    int id,
+    CategoriaLugarModelo categoria,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    _data.addAll(usuario.toJson());
-    final _options = _setStreamType<UsuarioCreacionModelo>(Options(
-      method: 'POST',
+    _data.addAll(categoria.toJson());
+    final _options = _setStreamType<CategoriaLugarModelo>(Options(
+      method: 'PUT',
       headers: _headers,
       extra: _extra,
     )
         .compose(
           _dio.options,
-          '/auth/create',
+          '/categorias-lugar/${id}',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -82,9 +85,9 @@ class _UsuarioApi implements UsuarioApi {
           baseUrl,
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late UsuarioCreacionModelo _value;
+    late CategoriaLugarModelo _value;
     try {
-      _value = UsuarioCreacionModelo.fromJson(_result.data!);
+      _value = CategoriaLugarModelo.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -93,19 +96,19 @@ class _UsuarioApi implements UsuarioApi {
   }
 
   @override
-  Future<UsuarioCreacionModelo> getUserById(int id) async {
+  Future<CategoriaLugarModelo> getCategoriaById(int id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<UsuarioCreacionModelo>(Options(
+    final _options = _setStreamType<CategoriaLugarModelo>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
     )
         .compose(
           _dio.options,
-          '/auth/users/${id}',
+          '/categorias-lugar/${id}',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -115,14 +118,75 @@ class _UsuarioApi implements UsuarioApi {
           baseUrl,
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late UsuarioCreacionModelo _value;
+    late CategoriaLugarModelo _value;
     try {
-      _value = UsuarioCreacionModelo.fromJson(_result.data!);
+      _value = CategoriaLugarModelo.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
     }
     return _value;
+  }
+
+  @override
+  Future<List<CategoriaLugarModelo>> getAllCategorias() async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<List<CategoriaLugarModelo>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/categorias-lugar',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<List<dynamic>>(_options);
+    late List<CategoriaLugarModelo> _value;
+    try {
+      _value = _result.data!
+          .map((dynamic i) =>
+              CategoriaLugarModelo.fromJson(i as Map<String, dynamic>))
+          .toList();
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<void> deleteCategoria(int id) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<void>(Options(
+      method: 'DELETE',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/categorias-lugar/${id}',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    await _dio.fetch<void>(_options);
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {

@@ -2,10 +2,12 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-// Importa tus nuevos componentes con los nombres actualizados
 import 'package:app_capachica/components/text_form_field_widget.dart';
 import 'package:app_capachica/components/button_widget.dart';
 import 'package:app_capachica/components/app_bar_widget.dart';
+import 'package:app_capachica/apis/usuario_api.dart';         // <--- Importar UsuarioApi
+import 'package:app_capachica/modelo/UsuarioModelo.dart';    // <--- Importar UsuarioCreacionModelo
+import 'package:dio/dio.dart'; // <--- Importar Dio para manejar DioException
 
 class RegisterUserScreen extends StatefulWidget {
   const RegisterUserScreen({super.key});
@@ -17,6 +19,9 @@ class RegisterUserScreen extends StatefulWidget {
 class _RegisterUserScreenState extends State<RegisterUserScreen> {
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+
+  // Instancia de tu API
+  final UsuarioApi _usuarioApi = UsuarioApi.create(); // <--- Instancia de UsuarioApi
 
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -70,27 +75,44 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
     }
   }
 
-  void _performRegistration(BuildContext context) {
+  // --- FUNCIÓN DE REGISTRO MODIFICADA ---
+  Future<void> _performRegistration(BuildContext context) async { // Marcado como async
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
       });
 
-      Future.delayed(const Duration(seconds: 3), () {
-        if (mounted) {
-          setState(() {
-            _isLoading = false;
-          });
-        }
+      try {
+        final String username = _usernameController.text;
+        final String password = _passwordController.text;
+        final String email = _emailController.text;
+        final String firstName = _firstNameController.text;
+        final String lastName = _lastNameController.text;
+        final String dateOfBirth = _dateOfBirthController.text;
+        final String phoneNumber = _phoneNumberController.text;
+        final String address = _addressController.text;
 
-        print('Datos de registro:');
-        print('Username: ${_usernameController.text}');
-        print('Password: ${_passwordController.text}');
-        print('Email: ${_emailController.text}');
-        print('Fecha de Nacimiento: ${_dateOfBirthController.text}');
+        // Crear el objeto UsuarioCreacionModelo
+        final UsuarioCreacionModelo newUser = UsuarioCreacionModelo(
+          userName: username,
+          password: password,
+          email: email,
+          firstName: firstName,
+          lastName: lastName,
+          // Asegúrate de que tu backend espera un String o un DateTime para dateOfBirth
+          // Si espera DateTime, podrías enviar _selectedDate.
+          dateOfBirth: dateOfBirth, // Enviando como String en formato YYYY-MM-DD
+          phoneNumber: phoneNumber,
+          address: address,
+          role: 'USER', // Asigna un rol por defecto, si aplica
+        );
 
+        // Llamar a la API de registro
+        final UsuarioCreacionModelo registeredUser = await _usuarioApi.registerUsuario(newUser);
+
+        // Si la llamada fue exitosa
         Fluttertoast.showToast(
-          msg: "Registro exitoso",
+          msg: "Registro exitoso para ${registeredUser.userName}!",
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.BOTTOM,
           backgroundColor: Colors.green,
@@ -98,8 +120,53 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
           fontSize: 16.0,
         );
 
-        Navigator.pop(context);
-      });
+        // Puedes navegar a la pantalla de login o a la principal si el registro loguea automáticamente
+        Navigator.pop(context); // Regresa a la pantalla anterior (login)
+
+      } on DioException catch (e) {
+        String errorMessage = 'Error al registrar usuario. Inténtalo de nuevo.';
+        print('Error de Dio: ${e.response?.data}');
+        if (e.response != null) {
+          if (e.response?.statusCode == 400) {
+            // Ejemplo de manejo de errores específicos del backend
+            if (e.response?.data['message'] != null) {
+              errorMessage = e.response?.data['message'];
+            } else {
+              errorMessage = 'Datos inválidos. Por favor, revisa tus entradas.';
+            }
+          } else if (e.response?.statusCode == 409) { // Por ejemplo, si el usuario ya existe
+            errorMessage = 'El usuario o email ya están registrados.';
+          } else {
+            errorMessage = 'Error del servidor: ${e.response?.statusCode}';
+          }
+        } else {
+          errorMessage = 'No se pudo conectar al servidor. Verifica tu conexión a internet.';
+        }
+        Fluttertoast.showToast(
+          msg: errorMessage,
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      } catch (e) {
+        print('Error inesperado durante el registro: $e');
+        Fluttertoast.showToast(
+          msg: "Ocurrió un error inesperado al registrar.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isLoading = false; // Asegura que el estado de carga se desactive
+          });
+        }
+      }
     }
   }
 
@@ -139,7 +206,6 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                       ),
                     ),
                     const SizedBox(height: 30),
-                    // Usando TextFormFieldWidget
                     TextFormFieldWidget(
                       controller: _usernameController,
                       hintText: 'Nombre de Usuario',
@@ -152,7 +218,6 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                       },
                     ),
                     const SizedBox(height: 20),
-                    // Usando TextFormFieldWidget
                     TextFormFieldWidget(
                       controller: _passwordController,
                       hintText: 'Contraseña',
@@ -166,7 +231,6 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                       },
                     ),
                     const SizedBox(height: 20),
-                    // Usando TextFormFieldWidget
                     TextFormFieldWidget(
                       controller: _emailController,
                       hintText: 'Email',
@@ -180,7 +244,6 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                       },
                     ),
                     const SizedBox(height: 20),
-                    // Usando TextFormFieldWidget
                     TextFormFieldWidget(
                       controller: _firstNameController,
                       hintText: 'Nombres',
@@ -193,7 +256,6 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                       },
                     ),
                     const SizedBox(height: 20),
-                    // Usando TextFormFieldWidget
                     TextFormFieldWidget(
                       controller: _lastNameController,
                       hintText: 'Apellidos',
@@ -206,7 +268,6 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                       },
                     ),
                     const SizedBox(height: 20),
-                    // Usando TextFormFieldWidget (para DatePicker)
                     TextFormFieldWidget(
                       controller: _dateOfBirthController,
                       hintText: 'Fecha de Nacimiento (YYYY-MM-DD)',
@@ -221,7 +282,6 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                       },
                     ),
                     const SizedBox(height: 20),
-                    // Usando TextFormFieldWidget
                     TextFormFieldWidget(
                       controller: _phoneNumberController,
                       hintText: 'Número de Teléfono',
@@ -235,7 +295,6 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                       },
                     ),
                     const SizedBox(height: 20),
-                    // Usando TextFormFieldWidget
                     TextFormFieldWidget(
                       controller: _addressController,
                       hintText: 'Dirección',
@@ -248,7 +307,6 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                       },
                     ),
                     const SizedBox(height: 30),
-                    // Usando ButtonWidget
                     ButtonWidget(
                       text: 'Registrar',
                       onPressed: () => _performRegistration(context),

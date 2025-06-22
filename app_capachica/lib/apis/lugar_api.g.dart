@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'usuario_api.dart';
+part of 'lugar_api.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,8 +8,8 @@ part of 'usuario_api.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element
 
-class _UsuarioApi implements UsuarioApi {
-  _UsuarioApi(
+class _LugarApi implements LugarApi {
+  _LugarApi(
     this._dio, {
     this.baseUrl,
     this.errorLogger,
@@ -24,20 +24,20 @@ class _UsuarioApi implements UsuarioApi {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<LoginResponseModelo> login(LoginRequestModelo usuario) async {
+  Future<LugarModelo> createLugar(LugarModelo lugar) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    _data.addAll(usuario.toJson());
-    final _options = _setStreamType<LoginResponseModelo>(Options(
+    _data.addAll(lugar.toJson());
+    final _options = _setStreamType<LugarModelo>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
     )
         .compose(
           _dio.options,
-          '/auth/login',
+          '/lugares',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -47,9 +47,9 @@ class _UsuarioApi implements UsuarioApi {
           baseUrl,
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late LoginResponseModelo _value;
+    late LugarModelo _value;
     try {
-      _value = LoginResponseModelo.fromJson(_result.data!);
+      _value = LugarModelo.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -58,54 +58,19 @@ class _UsuarioApi implements UsuarioApi {
   }
 
   @override
-  Future<UsuarioCreacionModelo> registerUsuario(
-      UsuarioCreacionModelo usuario) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(usuario.toJson());
-    final _options = _setStreamType<UsuarioCreacionModelo>(Options(
-      method: 'POST',
-      headers: _headers,
-      extra: _extra,
-    )
-        .compose(
-          _dio.options,
-          '/auth/create',
-          queryParameters: queryParameters,
-          data: _data,
-        )
-        .copyWith(
-            baseUrl: _combineBaseUrls(
-          _dio.options.baseUrl,
-          baseUrl,
-        )));
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late UsuarioCreacionModelo _value;
-    try {
-      _value = UsuarioCreacionModelo.fromJson(_result.data!);
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
-    return _value;
-  }
-
-  @override
-  Future<UsuarioCreacionModelo> getUserById(int id) async {
+  Future<LugarModelo> getLugarById(int id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<UsuarioCreacionModelo>(Options(
+    final _options = _setStreamType<LugarModelo>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
     )
         .compose(
           _dio.options,
-          '/auth/users/${id}',
+          '/lugares/${id}',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -115,14 +80,111 @@ class _UsuarioApi implements UsuarioApi {
           baseUrl,
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late UsuarioCreacionModelo _value;
+    late LugarModelo _value;
     try {
-      _value = UsuarioCreacionModelo.fromJson(_result.data!);
+      _value = LugarModelo.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
     }
     return _value;
+  }
+
+  @override
+  Future<List<LugarModelo>> getAllLugares() async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<List<LugarModelo>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/lugares',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<List<dynamic>>(_options);
+    late List<LugarModelo> _value;
+    try {
+      _value = _result.data!
+          .map((dynamic i) => LugarModelo.fromJson(i as Map<String, dynamic>))
+          .toList();
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<LugarModelo> updateLugar(
+    int id,
+    LugarModelo lugar,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(lugar.toJson());
+    final _options = _setStreamType<LugarModelo>(Options(
+      method: 'PUT',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/lugares/${id}',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late LugarModelo _value;
+    try {
+      _value = LugarModelo.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<void> deleteLugar(int id) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<void>(Options(
+      method: 'DELETE',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/lugares/${id}',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    await _dio.fetch<void>(_options);
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {

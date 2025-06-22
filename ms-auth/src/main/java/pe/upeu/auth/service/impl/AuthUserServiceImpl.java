@@ -66,6 +66,7 @@ public class AuthUserServiceImpl implements AuthUserService {
             // Ahora devuelve un TokenDto que contiene el token, el userName y el role.
             return TokenDto.builder()
                     .token(generatedToken)
+                    .id(user.getId())
                     .userName(user.getUserName()) // Obtiene el userName del usuario autenticado
                     .role(user.getRole().name())   // Obtiene el rol y lo convierte a su nombre de String (ej. "ADMIN", "USER")
                     .build();
@@ -94,12 +95,23 @@ public class AuthUserServiceImpl implements AuthUserService {
 
         AuthUser authUser = authUserOptional.get();
 
-        // 4. Obtener el rol del usuario (asumiendo que AuthUser tiene un campo 'role' de tipo UserRole enum)
-        // Y convertirlo a String para el DTO
+        // 4. Obtener el ID y el rol del usuario autenticado
+        // Asegúrate de que authUser.getId() devuelve un Integer o castéalo si es necesario
+        Integer userId = authUser.getId(); // <-- Obtén el ID aquí. ASUME que authUser.getId() es Integer.
+        // Si AuthUser.getId() devuelve Long, cámbialo a:
+        // Integer userId = authUser.getId().intValue();
+        // O cambia el tipo de 'id' en TokenDto a Long.
+        // Lo ideal es que los tipos coincidan.
+
         String userRole = authUser.getRole().name();
 
-        // 5. Construir y devolver el TokenDto con la información requerida
-        return new TokenDto(token, username, userRole);
+        // 5. Construir y devolver el TokenDto con la información requerida usando el builder
+        return TokenDto.builder()
+                .token(token)
+                .id(userId)       // <-- ¡Pasa el ID aquí!
+                .userName(username)
+                .role(userRole)
+                .build();
     }
 
     @Override

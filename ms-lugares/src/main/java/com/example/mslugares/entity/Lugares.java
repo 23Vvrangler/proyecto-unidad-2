@@ -2,16 +2,12 @@ package com.example.mslugares.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -36,7 +32,7 @@ public class Lugares{
     private LocalDateTime actualizadoEn; // actualizado_en TIMESTAMP   
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "categoria_id") // Nombre de la columna de la clave foránea en la tabla 'lugares'
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) // Para evitar problemas de serialización JSON con Lazy Loading
-    private CategoriaLugar categoria;
+    @JoinColumn(name = "categoria_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private CategoriaLugar categoria; // <-- ¡Aquí está! Se llama 'categoria'
 }

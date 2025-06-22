@@ -25,6 +25,6 @@ public class CategoriaLugar {
     private LocalDateTime creadoEn;
 
     @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties({"categoria"}) // Para evitar bucles infinitos en JSON
+    @JsonIgnoreProperties({"categoria"})
     private Set<Lugares> lugares = new HashSet<>();
 }
